@@ -1,0 +1,92 @@
+<html>
+  <style>body{margin:0}</style>
+  <body>
+    <canvas id="c"></canvas>
+    <script>
+      window.onload = function() {
+        canvas = document.getElementById('c');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        ctx = canvas.getContext('2d');
+
+        dim=50
+        ts=canvas.height/dim
+        px=py=Math.floor(dim/2)
+        xv=0
+        yv=1
+        tail=1
+        trail=[]
+        ax=Math.floor(Math.random()*dim)
+        ay=Math.floor(Math.random()*dim)
+
+        document.addEventListener('keydown', function(evt) {
+          switch (evt.keyCode) {
+            case 37:
+              xv=-1;
+              yv=0;
+              break;
+            case 38:
+              xv=0;
+              yv=-1;
+              break;
+            case 39:
+              xv=1;
+              yv=0;
+              break;
+            case 40:
+              xv=0;
+              yv=1;
+              break;
+          }
+        });
+
+        setInterval(update, 1000/30);
+
+        function update() {
+          
+          px+=xv
+          py+=yv
+
+          px%=dim
+          py%=dim
+
+          if (px<0) 
+            px = dim
+          if (py<0)
+            py = dim
+
+          ctx.fillStyle = 'black';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = 'green';
+
+          trail.forEach(function(c) {
+            if (px == c.x && py == c.y) {
+              tail = 1;
+              trail = [];
+              return;
+            }
+            ctx.fillRect(c.x*ts, c.y*ts, ts, ts);
+          });
+
+          ctx.fillStyle = 'red';
+          ctx.fillRect(ax*ts, ay*ts, ts, ts);
+
+
+          while (trail.length >= tail) {
+            trail.shift();
+          }
+
+          trail.push({x: px, y: py});
+
+
+          if (ax == px && ay == py) {
+            tail++;
+            ax = Math.floor(Math.random()*dim)
+            ay = Math.floor(Math.random()*dim)
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
